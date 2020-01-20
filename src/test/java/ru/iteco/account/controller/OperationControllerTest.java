@@ -29,7 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
-@Sql(value = {"/create-account-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/delete-account.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/create-account.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class OperationControllerTest {
 
     private String operationStr;
@@ -48,7 +49,7 @@ public class OperationControllerTest {
         operationStr = new ObjectMapper().writeValueAsString(operation);
     }
 
-    @Sql(value = {"/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+
     @Test
     public void getListById() throws Exception {
         this.mockMvc.perform(get("/operation/1"))
@@ -59,7 +60,6 @@ public class OperationControllerTest {
             .andExpect(jsonPath("$[0].amount").value(operation.getAmount()));
     }
 
-    @Sql(value = {"/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     public void createOperation() throws Exception {
         this.mockMvc.perform(post("/operation")

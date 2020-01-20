@@ -4,7 +4,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
@@ -17,8 +16,8 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-@Sql(value = {"/create-account-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@Sql(value = {"/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = {"/delete-account.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/create-account.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class OperationRepositoryTest {

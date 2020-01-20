@@ -19,16 +19,16 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestPropertySource("/application-test.properties")
-@Sql(value = {"/create-account-after.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+@Sql(value = {"/delete-account.sql"}, executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 public class AccountControllerTest {
 
     private String accountsStr;
@@ -41,31 +41,34 @@ public class AccountControllerTest {
 
     @Before
     public void setUp() throws JsonProcessingException {
-        account = new Account(1L, new BigDecimal("100.01"));
+        account = new Account(new BigDecimal("100.01"));
         accounts = Arrays.asList(account);
 
         accountStr = new ObjectMapper().writeValueAsString(account);
         accountsStr = new ObjectMapper().writeValueAsString(accounts);
     }
 
-    @Sql(value = {"/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/create-account.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     public void getAccounts() throws Exception {
         this.mockMvc.perform(get("/account"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(accountsStr)));
+            .andExpect(jsonPath("$").isNotEmpty())
+            .andExpect(jsonPath("$[0].balance").value(accounts.get(0).getBalance()));
     }
 
-    @Sql(value = {"/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/create-account.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     public void getAccountById() throws Exception {
         this.mockMvc.perform(get("/account/1"))
             .andDo(print())
             .andExpect(status().isOk())
-            .andExpect(content().string(containsString(accountStr)));
+            .andExpect(jsonPath("$").isNotEmpty())
+            .andExpect(jsonPath("$.balance").value(account.getBalance()));
     }
 
+    @Sql(value = {"/delete-account.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     public void create() throws Exception {
         this.mockMvc.perform(post("/account")
@@ -74,11 +77,10 @@ public class AccountControllerTest {
             .andDo(print())
             .andExpect(status().isOk())
             .andExpect(jsonPath("$").isNotEmpty())
-            .andExpect(jsonPath("$.id").value(account.getId()))
             .andExpect(jsonPath("$.balance").value(account.getBalance()));
     }
 
-    @Sql(value = {"/create-account-before.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+    @Sql(value = {"/create-account.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     @Test
     public void update() throws Exception {
         account.setBalance(new BigDecimal("500.05"));

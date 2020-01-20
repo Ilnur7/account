@@ -3,7 +3,6 @@ package ru.iteco.account.service;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.iteco.account.domain.Account;
 import ru.iteco.account.domain.Operation;
 import ru.iteco.account.domain.TypeOperation;
-import ru.iteco.account.repository.AccountRepository;
 import ru.iteco.account.repository.OperationRepository;
-
-import javax.naming.OperationNotSupportedException;
 
 import java.math.BigDecimal;
 import java.util.Arrays;

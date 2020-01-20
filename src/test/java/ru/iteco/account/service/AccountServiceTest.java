@@ -12,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.iteco.account.domain.Account;
 import ru.iteco.account.repository.AccountRepository;
 
-import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
